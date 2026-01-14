@@ -1,6 +1,7 @@
 "use client";
 
 import { useShopContext } from "~/context/ShopContext";
+import { ShoppingCart } from "lucide-react";
 
 export function FloatingCartButton() {
   const { cart, setIsCartOpen } = useShopContext();
