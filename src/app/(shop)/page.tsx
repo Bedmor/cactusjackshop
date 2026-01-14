@@ -7,6 +7,7 @@ import { ProductsGrid } from "./_components/ProductsGrid";
 import { CartSidebar } from "./_components/CartSidebar";
 import { Footer } from "./_components/Footer";
 import { FloatingCartButton } from "./_components/FloatingCartButton";
+import { Box, Leaf, MessageCircle, Eye } from "lucide-react";
 
 export default function ShopPage() {
   return (
@@ -30,8 +31,7 @@ function Features() {
       <div className="features-container">
         <div className="feature-item">
           <div className="feature-icon">
-            {/* Icons should be SVGs, using text for now or simple circle */}
-            📦
+            <Box size={40} />
           </div>
           <h3 className="feature-title">Hızlı ve Ücretsiz Kargo</h3>
           <p className="feature-description">
@@ -39,17 +39,17 @@ function Features() {
           </p>
         </div>
         <div className="feature-item">
-          <div className="feature-icon">🌿</div>
+          <div className="feature-icon"><Leaf size={40} /></div>
           <h3 className="feature-title">El Yapımı Ürünler</h3>
           <p className="feature-description">Doğal malzemeden özenle üretilir</p>
         </div>
         <div className="feature-item">
-          <div className="feature-icon">💬</div>
+          <div className="feature-icon"><MessageCircle size={40} /></div>
           <h3 className="feature-title">7/24 Destek</h3>
           <p className="feature-description">Her zaman yanınızdayız</p>
         </div>
         <div className="feature-item">
-           <div className="feature-icon">👀</div>
+           <div className="feature-icon"><Eye size={40} /></div>
           <h3 className="feature-title">Önce Gör Sonra Satın Al</h3>
           <p className="feature-description">
             Ürünü WhatsApp&apos;tan görüp beğendikten sonra ödeme yapın

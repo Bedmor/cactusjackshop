@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 import { supabase } from "~/utils/supabase";
 import { type Product, type Comment } from "~/types";
 import "~/styles/admin.css";
+import { Link } from "lucide-react";
 
 const ADMIN_PASSWORD_HASH = "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918";
 
@@ -35,8 +36,8 @@ export default function AdminPage() {
 
   useEffect(() => {
     if (isAuthenticated) {
-      if (activeTab === 'products') fetchProducts();
-      if (activeTab === 'comments') fetchComments();
+      if (activeTab === 'products') void fetchProducts();
+      if (activeTab === 'comments') void fetchComments();
     }
   }, [isAuthenticated, activeTab]);
 
@@ -136,7 +137,7 @@ export default function AdminPage() {
             </div>
             <button type="submit" className="login-btn">Giriş Yap</button>
           </form>
-          <a href="/" className="back-link">← Mağazaya Dön</a>
+          <Link href="/" className="back-link">← Mağazaya Dön</Link>
         </div>
       </div>
     );
@@ -204,7 +205,7 @@ export default function AdminPage() {
                         {products.map(product => (
                             <div key={product.id} className="product-card" style={{ border: '1px solid #ddd', padding: '10px', borderRadius: '8px' }}>
                                 {/* eslint-disable-next-line @next/next/no-img-element */ }
-                                <img src={product.image || '/assets/cactusjacktr.jpeg'} alt={product.name} style={{ width: '100%', height: '150px', objectFit: 'cover', borderRadius: '4px' }} />
+                                <img src={product.image ?? '/assets/cactusjacktr.jpeg'} alt={product.name} style={{ width: '100%', height: '150px', objectFit: 'cover', borderRadius: '4px' }} />
                                 <h4 style={{ margin: '10px 0' }}>{product.name}</h4>
                                 <p style={{ fontWeight: 'bold' }}>{product.price} TL</p>
                                 <div style={{ display: 'flex', gap: '5px', marginTop: '10px' }}>

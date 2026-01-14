@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { Tag, Truck, Headset, Leaf, MessageCircle } from "lucide-react";
 import "~/styles/animations.css";
 
 export function Navbar() {
@@ -8,11 +9,11 @@ export function Navbar() {
   const [activeBandIndex, setActiveBandIndex] = useState(0);
 
   const bandMessages = [
-    { text: "Alışverişte %40 indirim fırsatını kaçırmayın!", icon: "tag" },
-    { text: "Ücretsiz kargo fırsatından yararlanın!", icon: "truck" },
-    { text: "7/24 müşteri desteği ile yanınızdayız!", icon: "support" },
-    { text: "Doğal ve el yapımı ürünlerimizle tanışın!", icon: "nature" },
-    { text: "WhatsApp üzerinden sipariş verin!", icon: "whatsapp" },
+    { text: "Alışverişte %40 indirim fırsatını kaçırmayın!", icon: <Tag size={18} /> },
+    { text: "Ücretsiz kargo fırsatından yararlanın!", icon: <Truck size={18} /> },
+    { text: "7/24 müşteri desteği ile yanınızdayız!", icon: <Headset size={18} /> },
+    { text: "Doğal ve el yapımı ürünlerimizle tanışın!", icon: <Leaf size={18} /> },
+    { text: "WhatsApp üzerinden sipariş verin!", icon: <MessageCircle size={18} /> },
   ];
 
   useEffect(() => {
@@ -58,13 +59,11 @@ export function Navbar() {
       </nav>
 
       <div className="shop-band">
-        <div className="shop-band-content" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', transition: 'opacity 0.5s' }}>
-             <p style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                {/* Simplified Icon handling for now */}
-                {/* Use the text directly */}
-                <i className={`fas fa-${bandMessages[activeBandIndex]?.icon}`}></i>
-            <span key={activeBandIndex} className="animate-bounce-in">{bandMessages[activeBandIndex]?.text}</span>
-             </p>
+        <div className="shop-band-content" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+             <div className="animate-bounce-in" key={activeBandIndex} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                {bandMessages[activeBandIndex]?.icon}
+                <span>{bandMessages[activeBandIndex]?.text}</span>
+             </div>
         </div>
       </div>
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { useShopContext } from "~/context/ShopContext";
+import { X } from "lucide-react";
 
 export function CartSidebar() {
   const { cart, removeFromCart, updateQuantity, isCartOpen, setIsCartOpen } = useShopContext();
@@ -17,7 +18,9 @@ export function CartSidebar() {
     <div className={`cart-sidebar ${isCartOpen ? "active" : ""}`} id="cartSidebar">
       <div className="cart-header">
         <h2>Sepetim</h2>
-        <button className="close-cart" onClick={() => setIsCartOpen(false)}>×</button>
+        <button className="close-cart" onClick={() => setIsCartOpen(false)}>
+            <X size={24} />
+        </button>
       </div>
       <div className="cart-items" id="cartItems">
         {cart.length === 0 ? (
