@@ -50,7 +50,7 @@ export function Navbar() {
             </a>
           </li>
           <li>
-            <a href="#" id="contactLink" onClick={(e) => { e.preventDefault(); /* Open Contact Modal */ setIsMenuOpen(false); }}>
+            <a href="#contact" id="contactLink" onClick={() => setIsMenuOpen(false)}>
               <span className="menu-icon"></span>
               <span>İletişim</span>
             </a>
@@ -102,7 +102,7 @@ export function Navbar() {
               </a>
             </li>
             <li>
-              <a href="#" className="desktop-contact-link">
+              <a href="#contact" className="desktop-contact-link">
                 <span className="menu-icon"></span>
                 <span>İletişim</span>
               </a>

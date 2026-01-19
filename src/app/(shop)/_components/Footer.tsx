@@ -1,3 +1,5 @@
+import { Instagram, Mail, MapPin, MessageCircle, Phone, Pin } from "lucide-react";
+
 export function Footer() {
   return (
     <footer className="footer">
@@ -12,21 +14,21 @@ export function Footer() {
           </p>
           <div className="footer-social">
             <a href="https://www.instagram.com/arkeolog99" target="_blank" className="social-link" aria-label="Instagram">
-              Instagram
+              <Instagram size={20} />
             </a>
             <a href="https://wa.me/9055327958765" target="_blank" className="social-link" aria-label="WhatsApp">
-              WhatsApp
+              <MessageCircle size={20} />
             </a>
           </div>
         </div>
 
         {/* Contact */}
         <div className="footer-column">
-          <h3 className="footer-title">İletişim</h3>
+          <h3 id="contact" className="footer-title">İletişim</h3>
           <ul className="footer-contact">
-            <li>+90 532 795 8765</li>
-            <li>arkeolog_99@hotmail.com</li>
-            <li>Sakarya, Türkiye</li>
+            <li><Phone/>+90 532 795 8765</li>
+            <li><Mail/>arkeolog_99@hotmail.com</li>
+            <li><MapPin/>Sakarya, Türkiye</li>
           </ul>
         </div>
       </div>

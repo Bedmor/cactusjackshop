@@ -226,6 +226,10 @@ textarea:focus-visible {
   font-size: 2.2rem;
   display: block;
   margin-bottom: 5px;
+  justify-items: center;
+  align-items: center;
+  position: relative;
+  transform: translateX(25%);
 }
 
 .hero-scroll-indicator p {
