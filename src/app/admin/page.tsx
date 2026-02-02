@@ -1138,9 +1138,10 @@ export default function AdminPage() {
 
                   return (
                     <tr key={order.id}>
-                      <td>#{order.id}</td>
-                      <td>{date}</td>
+                      <td data-label="Sipariş No">#{order.id}</td>
+                      <td data-label="Tarih">{date}</td>
                       <td
+                        data-label="Ürünler"
                         style={{
                           maxWidth: 300,
                           whiteSpace: "nowrap",
@@ -1151,10 +1152,10 @@ export default function AdminPage() {
                       >
                         {itemsList}
                       </td>
-                      <td>
+                      <td data-label="Toplam">
                         <strong>{order.total_amount.toFixed(2)} ₺</strong>
                       </td>
-                      <td>
+                      <td data-label="Durum">
                         <span
                           style={{
                             background: statusColors[order.status],
@@ -1167,7 +1168,7 @@ export default function AdminPage() {
                           {statusLabels[order.status]}
                         </span>
                       </td>
-                      <td>
+                      <td data-label="İşlemler">
                         <button
                           className="action-btn"
                           onClick={() => viewOrderDetails(order)}
@@ -1246,7 +1247,7 @@ export default function AdminPage() {
 
                   return (
                     <tr key={product.id}>
-                      <td>
+                      <td data-label="Resim">
                         {isVideo ? (
                           <video
                             src={product.image}
@@ -1270,10 +1271,11 @@ export default function AdminPage() {
                           />
                         )}
                       </td>
-                      <td>{product.name}</td>
-                      <td>{product.description}</td>
-                      <td>{product.price.toFixed(2)} ₺</td>
+                      <td data-label="Ürün Adı">{product.name}</td>
+                      <td data-label="Açıklama">{product.description}</td>
+                      <td data-label="Fiyat">{product.price.toFixed(2)} ₺</td>
                       <td
+                        data-label="Stok"
                         style={{
                           color:
                             product.stock < 10 ? "var(--danger)" : "#2e7d32",
@@ -1282,7 +1284,7 @@ export default function AdminPage() {
                       >
                         {product.stock} adet
                       </td>
-                      <td>
+                      <td data-label="İşlemler">
                         <button
                           className="action-btn edit-btn"
                           onClick={() => editProduct(product.id)}
@@ -1333,13 +1335,15 @@ export default function AdminPage() {
               ) : (
                 comments.map((comment) => (
                   <tr key={comment.id}>
-                    <td>{comment.name || "Anonim"}</td>
-                    <td>{comment.body || ""}</td>
-                    <td>{"⭐".repeat(comment.stars || 0)}</td>
-                    <td>
+                    <td data-label="Kullanıcı">{comment.name || "Anonim"}</td>
+                    <td data-label="Yorum">{comment.body || ""}</td>
+                    <td data-label="Yıldız">
+                      {"⭐".repeat(comment.stars || 0)}
+                    </td>
+                    <td data-label="Tarih">
                       {new Date(comment.created_at).toLocaleString("tr-TR")}
                     </td>
-                    <td>
+                    <td data-label="İşlemler">
                       <button
                         className="action-btn edit-btn"
                         onClick={() => editComment(comment)}
