@@ -72,8 +72,13 @@ export default function AdminPage() {
   const [isLoading, setIsLoading] = useState(false);
 
   // Hero Settings
-  const [heroBackgroundStatus, setHeroBackgroundStatus] = useState("Gradyan (Varsayılan)");
-  const [heroPreview, setHeroPreview] = useState<{ url: string; isVideo: boolean } | null>(null);
+  const [heroBackgroundStatus, setHeroBackgroundStatus] = useState(
+    "Gradyan (Varsayılan)",
+  );
+  const [heroPreview, setHeroPreview] = useState<{
+    url: string;
+    isVideo: boolean;
+  } | null>(null);
   const heroFileRef = useRef<HTMLInputElement>(null);
 
   // Font Settings
@@ -90,8 +95,14 @@ export default function AdminPage() {
     price: 0,
     stock: 0,
   });
-  const [productMediaGallery, setProductMediaGallery] = useState<MediaItem[]>([]);
-  const [uploadProgress, setUploadProgress] = useState({ show: false, progress: 0, text: "" });
+  const [productMediaGallery, setProductMediaGallery] = useState<MediaItem[]>(
+    [],
+  );
+  const [uploadProgress, setUploadProgress] = useState({
+    show: false,
+    progress: 0,
+    text: "",
+  });
   const mediaFileRef = useRef<HTMLInputElement>(null);
 
   // Comment Modal
@@ -104,7 +115,9 @@ export default function AdminPage() {
   });
 
   // Drag and drop
-  const [draggedMediaIndex, setDraggedMediaIndex] = useState<number | null>(null);
+  const [draggedMediaIndex, setDraggedMediaIndex] = useState<number | null>(
+    null,
+  );
 
   useEffect(() => {
     const isLoggedIn = sessionStorage.getItem("adminLoggedIn");
@@ -211,7 +224,9 @@ export default function AdminPage() {
   // Load Stats
   const loadStats = async () => {
     try {
-      const { data: productsData } = await supabase.from("products").select("*");
+      const { data: productsData } = await supabase
+        .from("products")
+        .select("*");
       const { data: ordersData } = await supabase.from("orders").select("*");
 
       const products = productsData ?? [];
@@ -220,9 +235,14 @@ export default function AdminPage() {
       // Get storage stats
       let storageMB = "0";
       try {
-        const { data: files } = await supabase.storage.from("product-images").list();
+        const { data: files } = await supabase.storage
+          .from("product-images")
+          .list();
         if (files) {
-          const totalSize = files.reduce((acc: number, file) => acc + ((file.metadata?.size as number) ?? 0), 0);
+          const totalSize = files.reduce(
+            (acc: number, file) => acc + ((file.metadata?.size as number) ?? 0),
+            0,
+          );
           storageMB = (totalSize / (1024 * 1024)).toFixed(2);
         }
       } catch {
@@ -233,7 +253,8 @@ export default function AdminPage() {
         totalProducts: products.length,
         outOfStock: products.filter((p: Product) => p.stock === 0).length,
         totalOrders: orders.length,
-        pendingOrders: orders.filter((o: Order) => o.status === "pending").length,
+        pendingOrders: orders.filter((o: Order) => o.status === "pending")
+          .length,
         storageMB,
       });
     } catch (error) {
@@ -246,9 +267,14 @@ export default function AdminPage() {
     try {
       const { data: files } = await supabase.storage
         .from("product-images")
-        .list("", { limit: 100, sortBy: { column: "created_at", order: "desc" } });
+        .list("", {
+          limit: 100,
+          sortBy: { column: "created_at", order: "desc" },
+        });
 
-      const heroFile = files?.find((file) => file.name.startsWith("hero-background"));
+      const heroFile = files?.find((file) =>
+        file.name.startsWith("hero-background"),
+      );
       if (heroFile) {
         const isVideo = /\.(mp4|webm|mov|ogg)$/i.test(heroFile.name);
         const mediaType = isVideo ? "📹 Video" : "🖼️ Resim";
@@ -291,9 +317,13 @@ export default function AdminPage() {
         .list("", { limit: 100 });
 
       if (existingFiles) {
-        const heroFiles = existingFiles.filter((f) => f.name.startsWith("hero-background"));
+        const heroFiles = existingFiles.filter((f) =>
+          f.name.startsWith("hero-background"),
+        );
         if (heroFiles.length > 0) {
-          await supabase.storage.from("product-images").remove(heroFiles.map((f) => f.name));
+          await supabase.storage
+            .from("product-images")
+            .remove(heroFiles.map((f) => f.name));
         }
       }
 
@@ -301,10 +331,12 @@ export default function AdminPage() {
       const fileExt = file.name.split(".").pop();
       const fileName = `hero-background-${Date.now()}.${fileExt}`;
 
-      const { error } = await supabase.storage.from("product-images").upload(fileName, file, {
-        cacheControl: "3600",
-        upsert: true,
-      });
+      const { error } = await supabase.storage
+        .from("product-images")
+        .upload(fileName, file, {
+          cacheControl: "3600",
+          upsert: true,
+        });
 
       if (error) throw error;
 
@@ -321,7 +353,8 @@ export default function AdminPage() {
   };
 
   const removeHeroBackground = async () => {
-    if (!confirm("Hero arkaplanını kaldırmak istediğinize emin misiniz?")) return;
+    if (!confirm("Hero arkaplanını kaldırmak istediğinize emin misiniz?"))
+      return;
 
     try {
       const { data: files } = await supabase.storage
@@ -393,7 +426,12 @@ export default function AdminPage() {
   };
 
   const removeCustomFont = async () => {
-    if (!confirm("Özel fontu kaldırıp varsayılan fonta dönmek istediğinizden emin misiniz?")) return;
+    if (
+      !confirm(
+        "Özel fontu kaldırıp varsayılan fonta dönmek istediğinizden emin misiniz?",
+      )
+    )
+      return;
 
     try {
       await supabase.from("links").delete().eq("id", "customFont");
@@ -428,7 +466,10 @@ export default function AdminPage() {
     if (!confirm("Bu siparişi silmek istediğinizden emin misiniz?")) return;
 
     try {
-      const { error } = await supabase.from("orders").delete().eq("id", orderId);
+      const { error } = await supabase
+        .from("orders")
+        .delete()
+        .eq("id", orderId);
       if (error) throw error;
       alert("Sipariş silindi!");
       await loadOrders();
@@ -454,11 +495,14 @@ export default function AdminPage() {
     };
 
     const itemsList = order.items
-      .map((item) => `- ${item.product_name} (${item.quantity}x) = ${item.subtotal.toFixed(2)} ₺`)
+      .map(
+        (item) =>
+          `- ${item.product_name} (${item.quantity}x) = ${item.subtotal.toFixed(2)} ₺`,
+      )
       .join("\n");
 
     alert(
-      `Sipariş Detayları\n\nSipariş No: #${order.id}\nTarih: ${date}\nDurum: ${statusLabels[order.status]}\n\nÜrünler:\n${itemsList}\n\nToplam: ${order.total_amount.toFixed(2)} ₺`
+      `Sipariş Detayları\n\nSipariş No: #${order.id}\nTarih: ${date}\nDurum: ${statusLabels[order.status]}\n\nÜrünler:\n${itemsList}\n\nToplam: ${order.total_amount.toFixed(2)} ₺`,
     );
   };
 
@@ -483,14 +527,22 @@ export default function AdminPage() {
     });
 
     // Load existing media
-    if (product.media && Array.isArray(product.media) && product.media.length > 0) {
+    if (
+      product.media &&
+      Array.isArray(product.media) &&
+      product.media.length > 0
+    ) {
       setProductMediaGallery(
         product.media.map((mediaItem: MediaItem) => ({
           url: mediaItem.url,
-          type: mediaItem.type ?? (/\.(mp4|webm|mov|ogg)(\?|$)/i.exec(mediaItem.url) ? "video" : "image"),
+          type:
+            mediaItem.type ??
+            (/\.(mp4|webm|mov|ogg)(\?|$)/i.exec(mediaItem.url)
+              ? "video"
+              : "image"),
           isPrimary: mediaItem.isPrimary || false,
           isExisting: true,
-        }))
+        })),
       );
     } else if (product.image) {
       const isVideo = /\.(mp4|webm|mov|ogg)(\?|$)/i.exec(product.image);
@@ -538,7 +590,10 @@ export default function AdminPage() {
         }
       }
 
-      const { error } = await supabase.from("products").delete().eq("id", productId);
+      const { error } = await supabase
+        .from("products")
+        .delete()
+        .eq("id", productId);
       if (error) throw error;
 
       await loadProducts();
@@ -589,7 +644,7 @@ export default function AdminPage() {
 
   const setPrimaryMedia = (index: number) => {
     setProductMediaGallery((prev) =>
-      prev.map((media, i) => ({ ...media, isPrimary: i === index }))
+      prev.map((media, i) => ({ ...media, isPrimary: i === index })),
     );
   };
 
@@ -634,11 +689,7 @@ export default function AdminPage() {
           const ctx = canvas.getContext("2d");
           ctx?.drawImage(img, 0, 0, width, height);
 
-          canvas.toBlob(
-            (blob) => resolve(blob ?? file),
-            "image/jpeg",
-            0.8
-          );
+          canvas.toBlob((blob) => resolve(blob ?? file), "image/jpeg", 0.8);
         };
         img.src = e.target?.result as string;
       };
@@ -671,17 +722,24 @@ export default function AdminPage() {
           });
         } else if (media.file) {
           const isVideo = media.file.type.startsWith("video/");
-          const fileToUpload = isVideo ? media.file : await compressImage(media.file);
+          const fileToUpload = isVideo
+            ? media.file
+            : await compressImage(media.file);
           const fileExt = media.file.name.split(".").pop();
           const fileName = `product-${Date.now()}-${i}.${fileExt}`;
 
           const { error } = await supabase.storage
             .from("product-images")
-            .upload(fileName, fileToUpload, { cacheControl: "3600", upsert: true });
+            .upload(fileName, fileToUpload, {
+              cacheControl: "3600",
+              upsert: true,
+            });
 
           if (error) throw error;
 
-          const { data } = supabase.storage.from("product-images").getPublicUrl(fileName);
+          const { data } = supabase.storage
+            .from("product-images")
+            .getPublicUrl(fileName);
 
           uploadedMedia.push({
             url: data.publicUrl,
@@ -697,7 +755,8 @@ export default function AdminPage() {
         });
       }
 
-      const primaryMedia = uploadedMedia.find((m) => m.isPrimary) ?? uploadedMedia[0];
+      const primaryMedia =
+        uploadedMedia.find((m) => m.isPrimary) ?? uploadedMedia[0];
       if (!primaryMedia) {
         throw new Error("Medya yüklenemedi");
       }
@@ -754,7 +813,10 @@ export default function AdminPage() {
     if (!confirm("Bu yorumu silmek istediğinizden emin misiniz?")) return;
 
     try {
-      const { error } = await supabase.from("comments").delete().eq("id", commentId);
+      const { error } = await supabase
+        .from("comments")
+        .delete()
+        .eq("id", commentId);
       if (error) throw error;
       await loadComments();
     } catch (error) {
@@ -865,13 +927,22 @@ export default function AdminPage() {
           <div className="section-header">
             <h2>Üst Bölüm Ayarları</h2>
           </div>
-          <div style={{ marginBottom: 20, padding: 15, background: "var(--cream)", borderRadius: 8 }}>
+          <div
+            style={{
+              marginBottom: 20,
+              padding: 15,
+              background: "var(--cream)",
+              borderRadius: 8,
+            }}
+          >
             <strong>Mevcut Arkaplan:</strong>{" "}
             <span>{heroBackgroundStatus}</span>
           </div>
           <form className="modal-form" onSubmit={saveHeroBackground}>
             <div className="form-group">
-              <label htmlFor="heroBackground">Arkaplan Resmi veya Videosu</label>
+              <label htmlFor="heroBackground">
+                Arkaplan Resmi veya Videosu
+              </label>
               <input
                 type="file"
                 id="heroBackground"
@@ -879,8 +950,15 @@ export default function AdminPage() {
                 accept="image/*,video/*"
                 onChange={handleHeroFileChange}
               />
-              <small style={{ color: "var(--text-muted)", display: "block", marginTop: 5 }}>
-                Resim veya video yükleyebilirsiniz. Mevcut arkaplan silinecek ve yeni medya kullanılacak.
+              <small
+                style={{
+                  color: "var(--text-muted)",
+                  display: "block",
+                  marginTop: 5,
+                }}
+              >
+                Resim veya video yükleyebilirsiniz. Mevcut arkaplan silinecek ve
+                yeni medya kullanılacak.
               </small>
             </div>
             {heroPreview && (
@@ -889,14 +967,22 @@ export default function AdminPage() {
                   <video
                     src={heroPreview.url}
                     controls
-                    style={{ maxWidth: "100%", maxHeight: 300, borderRadius: 8 }}
+                    style={{
+                      maxWidth: "100%",
+                      maxHeight: 300,
+                      borderRadius: 8,
+                    }}
                   />
                 ) : (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={heroPreview.url}
                     alt="Preview"
-                    style={{ maxWidth: "100%", maxHeight: 300, borderRadius: 8 }}
+                    style={{
+                      maxWidth: "100%",
+                      maxHeight: 300,
+                      borderRadius: 8,
+                    }}
                   />
                 )}
               </div>
@@ -920,7 +1006,14 @@ export default function AdminPage() {
           <div className="section-header">
             <h2>Font Ayarları</h2>
           </div>
-          <div style={{ marginBottom: 20, padding: 15, background: "var(--cream)", borderRadius: 8 }}>
+          <div
+            style={{
+              marginBottom: 20,
+              padding: 15,
+              background: "var(--cream)",
+              borderRadius: 8,
+            }}
+          >
             <strong>Mevcut Font:</strong> <span>{fontStatus}</span>
           </div>
           <form className="modal-form" onSubmit={saveFontSettings}>
@@ -932,9 +1025,20 @@ export default function AdminPage() {
                 value={googleFontLink}
                 onChange={(e) => setGoogleFontLink(e.target.value)}
                 placeholder="https://fonts.googleapis.com/css2?family=..."
-                style={{ width: "100%", padding: 10, border: "1px solid #ddd", borderRadius: 4 }}
+                style={{
+                  width: "100%",
+                  padding: 10,
+                  border: "1px solid #ddd",
+                  borderRadius: 4,
+                }}
               />
-              <small style={{ color: "var(--text-muted)", display: "block", marginTop: 5 }}>
+              <small
+                style={{
+                  color: "var(--text-muted)",
+                  display: "block",
+                  marginTop: 5,
+                }}
+              >
                 Google Fonts&apos;tan aldığınız link&apos;i buraya yapıştırın.
               </small>
             </div>
@@ -946,9 +1050,20 @@ export default function AdminPage() {
                 value={fontFamily}
                 onChange={(e) => setFontFamily(e.target.value)}
                 placeholder="Roboto, sans-serif"
-                style={{ width: "100%", padding: 10, border: "1px solid #ddd", borderRadius: 4 }}
+                style={{
+                  width: "100%",
+                  padding: 10,
+                  border: "1px solid #ddd",
+                  borderRadius: 4,
+                }}
               />
-              <small style={{ color: "var(--text-muted)", display: "block", marginTop: 5 }}>
+              <small
+                style={{
+                  color: "var(--text-muted)",
+                  display: "block",
+                  marginTop: 5,
+                }}
+              >
                 Font ailesinin CSS adını girin.
               </small>
             </div>
@@ -985,19 +1100,25 @@ export default function AdminPage() {
             <tbody>
               {orders.length === 0 ? (
                 <tr>
-                  <td colSpan={6} style={{ textAlign: "center", padding: 40, color: "#666" }}>
+                  <td
+                    colSpan={6}
+                    style={{ textAlign: "center", padding: 40, color: "#666" }}
+                  >
                     Henüz sipariş bulunmamaktadır.
                   </td>
                 </tr>
               ) : (
                 orders.map((order) => {
-                  const date = new Date(order.created_at).toLocaleDateString("tr-TR", {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  });
+                  const date = new Date(order.created_at).toLocaleDateString(
+                    "tr-TR",
+                    {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    },
+                  );
 
                   const itemsList = order.items
                     .map((item) => `${item.product_name} (${item.quantity}x)`)
@@ -1051,12 +1172,17 @@ export default function AdminPage() {
                           className="action-btn"
                           onClick={() => viewOrderDetails(order)}
                           title="Detayları Gör"
-                          style={{ background: "var(--primary)", color: "white" }}
+                          style={{
+                            background: "var(--primary)",
+                            color: "white",
+                          }}
                         >
                           👁️
                         </button>
                         <select
-                          onChange={(e) => updateOrderStatus(order.id, e.target.value)}
+                          onChange={(e) =>
+                            updateOrderStatus(order.id, e.target.value)
+                          }
                           style={{ marginLeft: 10, padding: 5 }}
                           defaultValue=""
                         >
@@ -1104,13 +1230,19 @@ export default function AdminPage() {
             <tbody>
               {products.length === 0 ? (
                 <tr>
-                  <td colSpan={6} style={{ textAlign: "center", padding: 40, color: "#666" }}>
-                    Henüz ürün eklenmemiş. &quot;Yeni Ürün Ekle&quot; butonuna tıklayarak başlayın.
+                  <td
+                    colSpan={6}
+                    style={{ textAlign: "center", padding: 40, color: "#666" }}
+                  >
+                    Henüz ürün eklenmemiş. &quot;Yeni Ürün Ekle&quot; butonuna
+                    tıklayarak başlayın.
                   </td>
                 </tr>
               ) : (
                 products.map((product) => {
-                  const isVideo = product.image ? /\.(mp4|webm|mov|ogg)(\?|$)/i.exec(product.image) : null;
+                  const isVideo = product.image
+                    ? /\.(mp4|webm|mov|ogg)(\?|$)/i.exec(product.image)
+                    : null;
 
                   return (
                     <tr key={product.id}>
@@ -1132,7 +1264,8 @@ export default function AdminPage() {
                             alt={product.name}
                             className="product-image-small"
                             onError={(e) => {
-                              (e.target as HTMLImageElement).src = "/assets/100mg.png";
+                              (e.target as HTMLImageElement).src =
+                                "/assets/100mg.png";
                             }}
                           />
                         )}
@@ -1142,7 +1275,8 @@ export default function AdminPage() {
                       <td>{product.price.toFixed(2)} ₺</td>
                       <td
                         style={{
-                          color: product.stock < 10 ? "var(--danger)" : "#2e7d32",
+                          color:
+                            product.stock < 10 ? "var(--danger)" : "#2e7d32",
                           fontWeight: "bold",
                         }}
                       >
@@ -1189,7 +1323,10 @@ export default function AdminPage() {
             <tbody>
               {comments.length === 0 ? (
                 <tr>
-                  <td colSpan={5} style={{ textAlign: "center", padding: 40, color: "#666" }}>
+                  <td
+                    colSpan={5}
+                    style={{ textAlign: "center", padding: 40, color: "#666" }}
+                  >
                     Henüz yorum bulunmamaktadır.
                   </td>
                 </tr>
@@ -1199,7 +1336,9 @@ export default function AdminPage() {
                     <td>{comment.name || "Anonim"}</td>
                     <td>{comment.body || ""}</td>
                     <td>{"⭐".repeat(comment.stars || 0)}</td>
-                    <td>{new Date(comment.created_at).toLocaleString("tr-TR")}</td>
+                    <td>
+                      {new Date(comment.created_at).toLocaleString("tr-TR")}
+                    </td>
                     <td>
                       <button
                         className="action-btn edit-btn"
@@ -1228,7 +1367,10 @@ export default function AdminPage() {
           <div className="modal-content">
             <div className="modal-header">
               <h2>{editingCommentId ? "Yorumu Düzenle" : "Yeni Yorum Ekle"}</h2>
-              <button className="close-modal" onClick={() => setShowCommentModal(false)}>
+              <button
+                className="close-modal"
+                onClick={() => setShowCommentModal(false)}
+              >
                 ×
               </button>
             </div>
@@ -1239,7 +1381,9 @@ export default function AdminPage() {
                   type="text"
                   id="cmt-author"
                   value={commentForm.name}
-                  onChange={(e) => setCommentForm({ ...commentForm, name: e.target.value })}
+                  onChange={(e) =>
+                    setCommentForm({ ...commentForm, name: e.target.value })
+                  }
                   required
                 />
               </div>
@@ -1248,7 +1392,9 @@ export default function AdminPage() {
                 <textarea
                   id="cmt-body"
                   value={commentForm.body}
-                  onChange={(e) => setCommentForm({ ...commentForm, body: e.target.value })}
+                  onChange={(e) =>
+                    setCommentForm({ ...commentForm, body: e.target.value })
+                  }
                   required
                 />
               </div>
@@ -1261,7 +1407,10 @@ export default function AdminPage() {
                   max={5}
                   value={commentForm.stars}
                   onChange={(e) =>
-                    setCommentForm({ ...commentForm, stars: parseInt(e.target.value) || 5 })
+                    setCommentForm({
+                      ...commentForm,
+                      stars: parseInt(e.target.value) || 5,
+                    })
                   }
                   required
                   style={{ width: 80 }}
@@ -1281,7 +1430,10 @@ export default function AdminPage() {
           <div className="modal-content">
             <div className="modal-header">
               <h2>{editingProductId ? "Ürünü Düzenle" : "Yeni Ürün Ekle"}</h2>
-              <button className="close-modal" onClick={() => setShowProductModal(false)}>
+              <button
+                className="close-modal"
+                onClick={() => setShowProductModal(false)}
+              >
                 ×
               </button>
             </div>
@@ -1292,7 +1444,9 @@ export default function AdminPage() {
                   type="text"
                   id="productName"
                   value={productForm.name}
-                  onChange={(e) => setProductForm({ ...productForm, name: e.target.value })}
+                  onChange={(e) =>
+                    setProductForm({ ...productForm, name: e.target.value })
+                  }
                   required
                 />
               </div>
@@ -1301,7 +1455,12 @@ export default function AdminPage() {
                 <textarea
                   id="productDescription"
                   value={productForm.description}
-                  onChange={(e) => setProductForm({ ...productForm, description: e.target.value })}
+                  onChange={(e) =>
+                    setProductForm({
+                      ...productForm,
+                      description: e.target.value,
+                    })
+                  }
                   required
                 />
               </div>
@@ -1313,7 +1472,10 @@ export default function AdminPage() {
                   step="0.01"
                   value={productForm.price}
                   onChange={(e) =>
-                    setProductForm({ ...productForm, price: parseFloat(e.target.value) || 0 })
+                    setProductForm({
+                      ...productForm,
+                      price: parseFloat(e.target.value) || 0,
+                    })
                   }
                   required
                 />
@@ -1325,7 +1487,10 @@ export default function AdminPage() {
                   id="productStock"
                   value={productForm.stock}
                   onChange={(e) =>
-                    setProductForm({ ...productForm, stock: parseInt(e.target.value) || 0 })
+                    setProductForm({
+                      ...productForm,
+                      stock: parseInt(e.target.value) || 0,
+                    })
                   }
                   required
                 />
@@ -1355,11 +1520,14 @@ export default function AdminPage() {
                 {/* Media Gallery Preview */}
                 {productMediaGallery.length > 0 && (
                   <div style={{ marginTop: 15 }}>
-                    <strong style={{ display: "block", marginBottom: 10 }}>Yüklü Medyalar:</strong>
+                    <strong style={{ display: "block", marginBottom: 10 }}>
+                      Yüklü Medyalar:
+                    </strong>
                     <div
                       style={{
                         display: "grid",
-                        gridTemplateColumns: "repeat(auto-fill, minmax(120px, 1fr))",
+                        gridTemplateColumns:
+                          "repeat(auto-fill, minmax(120px, 1fr))",
                         gap: 10,
                       }}
                     >
@@ -1382,7 +1550,11 @@ export default function AdminPage() {
                           {media.type === "video" ? (
                             <video
                               src={media.url}
-                              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                              style={{
+                                width: "100%",
+                                height: "100%",
+                                objectFit: "cover",
+                              }}
                               muted
                               controls
                             />
@@ -1391,7 +1563,11 @@ export default function AdminPage() {
                             <img
                               src={media.url}
                               alt=""
-                              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                              style={{
+                                width: "100%",
+                                height: "100%",
+                                objectFit: "cover",
+                              }}
                             />
                           )}
                           {media.isPrimary && (
